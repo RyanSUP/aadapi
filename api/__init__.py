@@ -7,6 +7,8 @@ from config import Config
 # ============ Import Models ============
 from api.models.user import User
 from api.models.profile import Profile
+from api.models.day import Day
+from api.models.jerb import Jerb
 
 # ============ Import Views ============
 from api.views.auth import auth

@@ -6,6 +6,7 @@ class Profile(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    avatar = db.Column(db.String)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     def serialize(self):
