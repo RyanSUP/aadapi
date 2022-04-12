@@ -3,9 +3,12 @@ from api.middleware import login_required, read_token
 
 from api.models.db import db
 from api.models.day import Day
+from api.models.jerb import Jerb
 
 days = Blueprint('days', 'days')
 
+
+####### 📅  DAYS FOR DAYS 🌞 😎 ######
 @days.route('/', methods=["POST"])
 @login_required
 def create():
@@ -59,3 +62,25 @@ def delete(id):
   db.session.delete(day)
   db.session.commit()
   return jsonify(message="Fuck Yeah, DELETING DAYS BITCHES"), 200
+
+####### Jerbs 🧑🏻‍🚀 for the JERBLES 🐹 👷🏻‍♂️ 
+
+@days.route('/<day_id>/jerbs', methods=["POST"])
+@login_required
+def createJerb(day_id):
+  data = request.get_json()
+  data["day_id"] = day_id
+
+  profile = read_token(request)
+  day = Day.query.filter_by(id=day_id).first()
+  
+  if day.profile_id != profile["id"]:
+    return 'Forbidden', 403
+
+  jerb = Jerb(**data)
+
+  db.session.add(jerb)
+  db.session.commit()
+
+  day_data = day.serialize()
+  return jsonify(day_data), 201
