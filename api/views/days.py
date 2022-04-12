@@ -97,3 +97,37 @@ def getAllJerbsInDay(day_id):
   serialized_day = day.serialize()
   data = serialized_day["jerbs"]
   return jsonify(data), 201
+
+@days.route('/<day_id>/jerbs/<jerb_id>', methods=["PUT"])
+@login_required
+def updateJerb(day_id, jerb_id):
+  day = Day.query.filter_by(id=day_id).first()
+  data = request.get_json()
+  profile = read_token(request)
+  if day.profile_id != profile["id"]:
+    return 'Fornoddem', 403
+  
+  # Find the jerb to edit
+  jerb = Jerb.query.filter_by(id=jerb_id).first()
+  # Edit the jerb
+  for key in data:
+    setattr(jerb, key, data[key])
+  # save the jerb
+  db.session.commit()
+  # return the day with updated jerb, because all state will derive from day
+  return jsonify(day.serialize())
+
+@days.route('//<day_id>/jerbs/<jerb_id>', methods=["DELETE"])
+@login_required
+def deleteJerb(day_id, jerb_id):
+  day = Day.query.filter_by(id=day_id).first()
+  
+  profile = read_token(request)
+  if day.profile_id != profile["id"]:
+    return 'Fornoddem', 403
+
+  jerb = Jerb.query.filter_by(id=jerb_id).first()
+  db.session.delete(jerb)
+  db.session.commit()
+
+  return jsonify(day.serialize())
