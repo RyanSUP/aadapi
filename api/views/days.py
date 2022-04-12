@@ -115,5 +115,19 @@ def updateJerb(day_id, jerb_id):
   # save the jerb
   db.session.commit()
   # return the day with updated jerb, because all state will derive from day
-  day = day.serialize()
-  return jsonify(day)
+  return jsonify(day.serialize())
+
+@days.route('//<day_id>/jerbs/<jerb_id>', methods=["DELETE"])
+@login_required
+def deleteJerb(day_id, jerb_id):
+  day = Day.query.filter_by(id=day_id).first()
+  
+  profile = read_token(request)
+  if day.profile_id != profile["id"]:
+    return 'Fornoddem', 403
+
+  jerb = Jerb.query.filter_by(id=jerb_id).first()
+  db.session.delete(jerb)
+  db.session.commit()
+
+  return jsonify(day.serialize())
