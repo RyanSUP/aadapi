@@ -30,3 +30,21 @@ def show(id):
   day_data = day.serialize()
   #**** ADD HERE THE FUNCTION TO FILL DAY/JERB Target ASSOCIATION****####
   return jsonify(day=day_data), 200
+
+@days.route('/<id>', methods=["PUT"])
+@login_required
+def update(id):
+  data = request.get_json()
+  profile = read_token(request)
+  day = Day.query.filter_by(id=id).first()
+
+  if day.profile_id != profile["id"]:
+    return 'Forbidden', 403
+
+  for key in data:
+    setattr(day, key, data[key])
+
+  db.session.commit()
+  return jsonify(day.serialize()), 200
+
+@days.route()
