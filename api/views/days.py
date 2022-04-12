@@ -22,3 +22,11 @@ def create():
 def getAll():
   days = Day.query.all()
   return jsonify([day.serialize() for day in days]), 200
+
+@days.route('/<id>', methods=["GET"])
+@login_required
+def show(id):
+  day = Day.query.filter_by(id=id).first()
+  day_data = day.serialize()
+  #**** ADD HERE THE FUNCTION TO FILL DAY/JERB Target ASSOCIATION****####
+  return jsonify(day=day_data), 200
