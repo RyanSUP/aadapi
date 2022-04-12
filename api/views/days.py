@@ -84,3 +84,16 @@ def createJerb(day_id):
 
   day_data = day.serialize()
   return jsonify(day_data), 201
+
+@days.route('/<day_id>/jerbs', methods=["GET"])
+@login_required
+def getAllJerbsInDay(day_id):
+  day = Day.query.filter_by(id=day_id).first()
+
+  profile = read_token(request)
+  if day.profile_id != profile["id"]:
+    return 'Fornoddem', 403
+
+  serialized_day = day.serialize()
+  data = serialized_day["jerbs"]
+  return jsonify(data), 201
