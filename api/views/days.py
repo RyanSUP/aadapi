@@ -47,4 +47,15 @@ def update(id):
   db.session.commit()
   return jsonify(day.serialize()), 200
 
-@days.route()
+@days.route('/<id>', methods=["DELETE"])
+@login_required
+def delete(id):
+  profile = read_token(request)
+  day = Day.query.filter_by(id=id).first()
+
+  if day.profile_id != profile["id"]:
+    return 'Forbidden', 403
+  
+  db.session.delete(day)
+  db.session.commit()
+  return jsonify(message="Fuck Yeah, DELETING DAYS BITCHES"), 200
