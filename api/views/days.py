@@ -11,16 +11,14 @@ days = Blueprint('days', 'days')
 def create():
   data = request.get_json()
   profile = read_token(request)
-  print("    ")
-  print("    ")
-  print("    ")
-  print("    ")
-  print("    ")
-  print("    ")
-  print("    ")
-  print("PROFILE MOTHAFUCKA", profile)
   data["profile_id"] = profile["id"]
   day = Day(**data)
   db.session.add(day)
   db.session.commit()
   return jsonify(day.serialize()), 201
+
+@days.route('/', methods=["GET"])
+@login_required
+def getAll():
+  days = Day.query.all()
+  return jsonify([day.serialize() for day in days]), 200
