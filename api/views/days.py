@@ -24,7 +24,7 @@ def create():
 @login_required
 def getAll():
   profile = read_token(request)
-  days = Day.query.filter_by(profile_id=profile['id']).order_by(Day.id)
+  days = Day.query.filter_by(profile_id=profile['id']).order_by(Day.id.desc())
   return jsonify([day.serialize() for day in days]), 200
 
 @days.route('/<id>', methods=["GET"])
