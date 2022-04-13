@@ -23,7 +23,8 @@ def create():
 @days.route('/', methods=["GET"])
 @login_required
 def getAll():
-  days = Day.query.all()
+  profile = read_token(request)
+  days = Day.query.filter_by(profile_id=profile['id'])
   return jsonify([day.serialize() for day in days]), 200
 
 @days.route('/<id>', methods=["GET"])
@@ -39,7 +40,7 @@ def show(id):
 def update(id):
   data = request.get_json()
   profile = read_token(request)
-  day = Day.query.filter_by(id=id).first()
+  day = Day.query().filter_by(id=id).first()
 
   if day.profile_id != profile["id"]:
     return 'Forbidden', 403

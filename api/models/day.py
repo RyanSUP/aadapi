@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date
 from api.models.db import db
 
 class Day(db.Model):
@@ -7,7 +7,7 @@ class Day(db.Model):
   stand_up = db.Column(db.String(280))
   stand_down = db.Column(db.String(280))
   profile_id = db.Column(db.Integer, db.ForeignKey('profiles.id'))
-  created_at = db.Column(db.DateTime, default=datetime.utcnow)
+  created_at = db.Column(db.DateTime, default=date.today)
 
   #Relationships
   jerbs = db.relationship("Jerb", cascade='all')
