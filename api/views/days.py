@@ -40,7 +40,7 @@ def show(id):
 def update(id):
   data = request.get_json()
   profile = read_token(request)
-  day = Day.query().filter_by(id=id).first()
+  day = Day.query.filter_by(id=id).first()
 
   if day.profile_id != profile["id"]:
     return 'Forbidden', 403
